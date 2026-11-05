@@ -9,4 +9,5 @@ public class Tile : MonoBehaviour
 
     [SerializeField]
     private TileType _tileType;
+    public Vector2 Coordinates;
 }

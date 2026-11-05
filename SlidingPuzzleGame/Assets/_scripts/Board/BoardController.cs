@@ -56,6 +56,7 @@ public class BoardController : MonoBehaviour
 
         if (_hit.TileType == TileType.EmptyTile)
         {
+            _currentTile = null;
             return;
         }
 
@@ -64,16 +65,6 @@ public class BoardController : MonoBehaviour
     private void RequestTileMovement()
     {
         if(_currentTile == null)
-        {
-            return;
-        }
-
-        if(_hit == null)
-        {
-            return;
-        }
-
-        if (_hit.transform == _currentTile)
         {
             return;
         }
