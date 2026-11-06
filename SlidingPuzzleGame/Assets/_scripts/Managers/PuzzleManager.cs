@@ -4,59 +4,124 @@ public class PuzzleManager : MonoBehaviour
 {
     [SerializeField]
     private Tile _emptyTile;
-    public void CheckTileMovement(Tile currentTile, Tile neighboringTile)
+
+    private TileCheckResult _resultInfo;
+    public void CheckTileMovement(Tile selectedTile, Tile targetTile)
     {
-        bool neighboringChecked = false;
-
-        if(neighboringTile == currentTile || neighboringTile == null)
+        bool isNeighboringTileValidated = false;
+        
+        if (targetTile == selectedTile || targetTile == null) //this check is used when the player doesn't drag a tile
         {
-            if (!CheckCoordinates(currentTile, _emptyTile))
+            _resultInfo = GetTilesInfo(selectedTile, _emptyTile);
+
+            if(_resultInfo == null)
             {
                 return;
             }
 
-            neighboringTile = _emptyTile;
+            if (!_resultInfo.IsEmptyTileDirectlyAdjacent)
+            {
+                Tile candidateTile = selectedTile.CheckAdjacentTiles(_resultInfo.Direction);
 
-            neighboringChecked = true;
+                if(candidateTile != null && AreTilesAdjacent(candidateTile, _emptyTile))
+                {
+                    SwapTilesPositions(candidateTile, _emptyTile);
+                }
+            }
+
+            targetTile = _emptyTile;
+
+            isNeighboringTileValidated = true;
         }
 
-        if (!neighboringChecked)
+        if (!isNeighboringTileValidated)
         {
-            if (neighboringTile.TileType == TileType.StandardTile)
+            if (targetTile.TileType == TileType.StandardTile)
             {
                 return;
             }
 
-            if (!CheckCoordinates(currentTile, neighboringTile))
+            if (!AreTilesAdjacent(selectedTile, targetTile))
             {
                 return;
             }
         }
 
-        Vector2 startPosition = currentTile.transform.position;
-        Vector2 endPosition = neighboringTile.transform.position;
-
-        Vector2 startCoordinates = currentTile.Coordinates;
-        Vector2 endCoordinates = neighboringTile.Coordinates;
-
-        currentTile.transform.position = endPosition;
-        currentTile.Coordinates = endCoordinates;
-
-        neighboringTile.transform.position = startPosition;
-        neighboringTile.Coordinates = startCoordinates;
+        SwapTilesPositions(selectedTile, targetTile);
     }
-    private bool CheckCoordinates(Tile currentTile, Tile emptyTile)
+    private bool AreTilesAdjacent(Tile selectedTile, Tile targetTile)
     {
-        if (currentTile.Coordinates.x == emptyTile.Coordinates.x && Mathf.Abs(currentTile.Coordinates.y - emptyTile.Coordinates.y) == 1)
+        if (selectedTile.Coordinates.x == targetTile.Coordinates.x && Mathf.Abs(selectedTile.Coordinates.y - targetTile.Coordinates.y) == 1)
         {
             return true;
         }
 
-        if (currentTile.Coordinates.y == emptyTile.Coordinates.y && Mathf.Abs(currentTile.Coordinates.x - emptyTile.Coordinates.x) == 1)
+        if (selectedTile.Coordinates.y == targetTile.Coordinates.y && Mathf.Abs(selectedTile.Coordinates.x - targetTile.Coordinates.x) == 1)
         {
             return true;
         }
 
         return false;
+    }
+    private TileCheckResult GetTilesInfo(Tile selectedTile, Tile emptyTile)
+    {
+        TileCheckResult result = new TileCheckResult();
+
+        if (selectedTile.Coordinates.x == emptyTile.Coordinates.x)
+        {
+            switch(Mathf.Abs(selectedTile.Coordinates.y - emptyTile.Coordinates.y))
+            {
+                case 1:
+                    result.IsEmptyTileDirectlyAdjacent = true;
+                    return result;
+                default:
+                    result.IsEmptyTileDirectlyAdjacent = false;
+                    if (selectedTile.Coordinates.y < emptyTile.Coordinates.y)
+                    {
+                        result.Direction = Vector2.right;
+                        return result;
+                    }
+                    else
+                    {
+                        result.Direction = Vector2.left;
+                        return result;
+                    }
+            }
+        }
+
+        if (selectedTile.Coordinates.y == emptyTile.Coordinates.y)
+        {
+            switch(Mathf.Abs(selectedTile.Coordinates.x - emptyTile.Coordinates.x))
+            {
+                case 1:
+                    result.IsEmptyTileDirectlyAdjacent = true;
+                    return result;
+                default:
+                    result.IsEmptyTileDirectlyAdjacent = false;
+                    if(selectedTile.Coordinates.x < emptyTile.Coordinates.x)
+                    {
+                        result.Direction = Vector2.down;
+                        return result;
+                    }
+                    else
+                    {
+                        result.Direction= Vector2.up;
+                        return result;
+                    }
+            }
+        }
+
+        return null;
+    }
+    private void SwapTilesPositions(Tile startTile, Tile endTile)
+    {
+        Vector2 startPosition = startTile.transform.position;
+        Vector2 endPosition = endTile.transform.position;
+
+        Vector2 startCoordinates = startTile.Coordinates;
+        Vector2 endCoordinates = endTile.Coordinates;
+
+        startTile.SetTilePositionAndCoordinates(endPosition, endCoordinates);
+        endTile.SetTilePositionAndCoordinates(startPosition, startCoordinates);
     }
 }

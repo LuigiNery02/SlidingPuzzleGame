@@ -363,7 +363,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Tile
   _tileType: 0
-  Coordinates: {x: 2, y: 2}
+  _raycastDistance: 3
+  _coordinates: {x: 2, y: 2}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -782,7 +783,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Tile
   _tileType: 0
-  Coordinates: {x: 3, y: 2}
+  _raycastDistance: 3
+  _coordinates: {x: 3, y: 2}
 --- !u!1 &696990782
 GameObject:
   m_ObjectHideFlags: 0
@@ -935,7 +937,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Tile
   _tileType: 0
-  Coordinates: {x: 3, y: 1}
+  _raycastDistance: 3
+  _coordinates: {x: 3, y: 1}
 --- !u!1 &887374513
 GameObject:
   m_ObjectHideFlags: 0
@@ -1086,7 +1089,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Tile
   _tileType: 1
-  Coordinates: {x: 3, y: 3}
+  _raycastDistance: 3
+  _coordinates: {x: 3, y: 3}
 --- !u!61 &1056982384
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1316,7 +1320,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Tile
   _tileType: 0
-  Coordinates: {x: 1, y: 3}
+  _raycastDistance: 3
+  _coordinates: {x: 1, y: 3}
 --- !u!1 &1297408474
 GameObject:
   m_ObjectHideFlags: 0
@@ -1531,7 +1536,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Tile
   _tileType: 0
-  Coordinates: {x: 1, y: 2}
+  _raycastDistance: 3
+  _coordinates: {x: 1, y: 2}
 --- !u!1 &1661903925
 GameObject:
   m_ObjectHideFlags: 0
@@ -1684,7 +1690,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Tile
   _tileType: 0
-  Coordinates: {x: 2, y: 3}
+  _raycastDistance: 3
+  _coordinates: {x: 2, y: 3}
 --- !u!1 &1687858558
 GameObject:
   m_ObjectHideFlags: 0
@@ -1976,7 +1983,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Tile
   _tileType: 0
-  Coordinates: {x: 1, y: 1}
+  _raycastDistance: 3
+  _coordinates: {x: 1, y: 1}
 --- !u!1 &1773782291
 GameObject:
   m_ObjectHideFlags: 0
@@ -2160,7 +2168,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Tile
   _tileType: 0
-  Coordinates: {x: 2, y: 1}
+  _raycastDistance: 3
+  _coordinates: {x: 2, y: 1}
 --- !u!1 &2068670824
 GameObject:
   m_ObjectHideFlags: 0
