@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 
 public class Tile : MonoBehaviour
 {
@@ -17,8 +18,11 @@ public class Tile : MonoBehaviour
     private float _raycastDistance = 3f;
     [SerializeField]
     private Vector2 _coordinates;
+    [SerializeField]
+    private TextMeshProUGUI _numberText;
 
     private Collider2D _collider2D;
+    private int _number;
     private void Awake()
     {
         _collider2D = GetComponent<Collider2D>();
@@ -52,5 +56,10 @@ public class Tile : MonoBehaviour
     {
         transform.position = newPosition;
         _coordinates = newCoordinates;
+    }
+    public void SetCurrentNumber(int currentNumber)
+    {
+        _number = currentNumber;
+        _numberText.text = _number.ToString();
     }
 }
