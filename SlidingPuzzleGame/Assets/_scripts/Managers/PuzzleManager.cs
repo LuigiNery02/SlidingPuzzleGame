@@ -3,17 +3,24 @@ using UnityEngine;
 
 public class PuzzleManager : MonoBehaviour
 {
+    public bool GameStarted {  get; private set; }
+
     [SerializeField]
     private Transform _grid;
     [SerializeField]
     private Tile _emptyTile;
+    [Range(0, 200)]
+    [SerializeField]
+    private int iterations = 100;
 
     private TileCheckResult _resultInfo;
     private List<Tile> _currentGridTiles = new List<Tile>();
     private List<int> _remainingNumbers = new List<int>();
     private void Start()
     {
-        ShuffleTiles();
+        InitializeTilesInOrder();
+        ShuffleTilesByValidMoves(iterations);
+        GameStarted = true;
     }
     public void CheckTileMovement(Tile selectedTile, Tile targetTile)
     {
@@ -136,14 +143,17 @@ public class PuzzleManager : MonoBehaviour
         startTile.SetTilePositionAndCoordinates(endPosition, endCoordinates, endCurrentNumberPosition);
         endTile.SetTilePositionAndCoordinates(startPosition, startCoordinates, startCurrentNumberPosition);
     }
-    private void ShuffleTiles()
+    private void InitializeTilesInOrder()
     {
-        for(int i = 0; i < _grid.childCount; i++)
+        _remainingNumbers.Clear();
+        _currentGridTiles.Clear();
+
+        for (int i = 0; i < _grid.childCount; i++)
         {
             _remainingNumbers.Add(i + 1);
 
             Transform tileTransform = _grid.GetChild(i);
-            if(tileTransform.TryGetComponent<Tile>(out Tile tile))
+            if (tileTransform.TryGetComponent<Tile>(out Tile tile))
             {
                 tile.SetCurrentNumberPosition(i + 1);
                 tile.SetPuzzleManager(this);
@@ -151,15 +161,31 @@ public class PuzzleManager : MonoBehaviour
             }
         }
 
-        for (int i = 0; i < _currentGridTiles.Count - 1; i++)
+        for (int i = 0; i < _currentGridTiles.Count; i++)
         {
-            int currentNumber = Random.Range(0, _remainingNumbers.Count - 1);
-            _currentGridTiles[i].SetCurrentNumber(_remainingNumbers[currentNumber]);
-            _remainingNumbers.RemoveAt(currentNumber);
+            _currentGridTiles[i].SetCurrentNumber(i + 1);
         }
+    }
+    private void ShuffleTilesByValidMoves(int iterations)
+    {
+        for (int i = 0; i < iterations; i++)
+        {
+            List<Tile> validNeighbors = new List<Tile>();
 
-        _emptyTile.SetCurrentNumber(_remainingNumbers[0]);
-        _remainingNumbers.RemoveAt(0);
+            foreach (Tile tile in _currentGridTiles)
+            {
+                if (AreTilesAdjacent(tile, _emptyTile))
+                {
+                    validNeighbors.Add(tile);
+                }
+            }
+
+            if (validNeighbors.Count > 0)
+            {
+                Tile randomNeighbor = validNeighbors[Random.Range(0, validNeighbors.Count)];
+                SwapTilesPositions(randomNeighbor, _emptyTile);
+            }
+        }
     }
     public void CheckTilesPosition()
     {

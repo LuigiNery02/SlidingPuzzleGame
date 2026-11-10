@@ -606,7 +606,6 @@ MonoBehaviour:
   _raycastDistance: 3
   _coordinates: {x: 2, y: 2}
   _numberText: {fileID: 740796115}
-  _number: 0
 --- !u!1 &483518190
 GameObject:
   m_ObjectHideFlags: 0
@@ -854,8 +853,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PuzzleManager
   _grid: {fileID: 2068670825}
   _emptyTile: {fileID: 1056982383}
-  _currentGridTiles: []
-  _remainingNumbers: 
+  iterations: 100
 --- !u!4 &528257925
 Transform:
   m_ObjectHideFlags: 0
@@ -1213,7 +1211,6 @@ MonoBehaviour:
   _raycastDistance: 3
   _coordinates: {x: 3, y: 2}
   _numberText: {fileID: 223923427}
-  _number: 0
 --- !u!1 &676896632
 GameObject:
   m_ObjectHideFlags: 0
@@ -1574,7 +1571,6 @@ MonoBehaviour:
   _raycastDistance: 3
   _coordinates: {x: 3, y: 1}
   _numberText: {fileID: 1989346763}
-  _number: 0
 --- !u!1 &740796113
 GameObject:
   m_ObjectHideFlags: 0
@@ -2140,7 +2136,6 @@ MonoBehaviour:
   _raycastDistance: 3
   _coordinates: {x: 3, y: 3}
   _numberText: {fileID: 1489964119}
-  _number: 0
 --- !u!61 &1056982384
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2715,7 +2710,6 @@ MonoBehaviour:
   _raycastDistance: 3
   _coordinates: {x: 1, y: 3}
   _numberText: {fileID: 837253702}
-  _number: 0
 --- !u!1 &1297408474
 GameObject:
   m_ObjectHideFlags: 0
@@ -3071,7 +3065,6 @@ MonoBehaviour:
   _raycastDistance: 3
   _coordinates: {x: 1, y: 2}
   _numberText: {fileID: 1918652372}
-  _number: 0
 --- !u!1 &1653846092
 GameObject:
   m_ObjectHideFlags: 0
@@ -3365,7 +3358,6 @@ MonoBehaviour:
   _raycastDistance: 3
   _coordinates: {x: 2, y: 3}
   _numberText: {fileID: 781360380}
-  _number: 0
 --- !u!1 &1687858558
 GameObject:
   m_ObjectHideFlags: 0
@@ -3865,7 +3857,6 @@ MonoBehaviour:
   _raycastDistance: 3
   _coordinates: {x: 1, y: 1}
   _numberText: {fileID: 1653846094}
-  _number: 0
 --- !u!1 &1773782291
 GameObject:
   m_ObjectHideFlags: 0
@@ -4053,7 +4044,6 @@ MonoBehaviour:
   _raycastDistance: 3
   _coordinates: {x: 2, y: 1}
   _numberText: {fileID: 1073961900}
-  _number: 0
 --- !u!1 &1918652370
 GameObject:
   m_ObjectHideFlags: 0

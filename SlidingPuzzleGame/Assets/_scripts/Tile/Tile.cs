@@ -62,7 +62,7 @@ public class Tile : MonoBehaviour
 
         if(CurrentNumberPosition == Number)
         {
-            if(_puzzleManager != null)
+            if(_puzzleManager != null && _puzzleManager.GameStarted)
             {
                 _puzzleManager.CheckTilesPosition();
             }
