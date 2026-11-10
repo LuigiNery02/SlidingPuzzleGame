@@ -11,6 +11,8 @@ public class Tile : MonoBehaviour
     {
         get { return _coordinates; }
     }
+    public int CurrentNumberPosition { get; private set; }
+    public int Number { get; private set; }
 
     [SerializeField]
     private TileType _tileType;
@@ -22,7 +24,7 @@ public class Tile : MonoBehaviour
     private TextMeshProUGUI _numberText;
 
     private Collider2D _collider2D;
-    private int _number;
+    private PuzzleManager _puzzleManager;
     private void Awake()
     {
         _collider2D = GetComponent<Collider2D>();
@@ -52,14 +54,31 @@ public class Tile : MonoBehaviour
 
         return null;
     }
-    public void SetTilePositionAndCoordinates(Vector2 newPosition, Vector2 newCoordinates)
+    public void SetTilePositionAndCoordinates(Vector2 newPosition, Vector2 newCoordinates, int numberPosition)
     {
         transform.position = newPosition;
         _coordinates = newCoordinates;
+        CurrentNumberPosition = numberPosition;
+
+        if(CurrentNumberPosition == Number)
+        {
+            if(_puzzleManager != null)
+            {
+                _puzzleManager.CheckTilesPosition();
+            }
+        }
     }
     public void SetCurrentNumber(int currentNumber)
     {
-        _number = currentNumber;
-        _numberText.text = _number.ToString();
+        Number = currentNumber;
+        _numberText.text = Number.ToString();
+    }
+    public void SetCurrentNumberPosition(int numberPosition)
+    {
+        CurrentNumberPosition = numberPosition;
+    }
+    public void SetPuzzleManager(PuzzleManager puzzleManager)
+    {
+        _puzzleManager = puzzleManager;
     }
 }

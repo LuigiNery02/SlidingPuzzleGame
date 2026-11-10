@@ -9,9 +9,7 @@ public class PuzzleManager : MonoBehaviour
     private Tile _emptyTile;
 
     private TileCheckResult _resultInfo;
-    [SerializeField]
     private List<Tile> _currentGridTiles = new List<Tile>();
-    [SerializeField]
     private List<int> _remainingNumbers = new List<int>();
     private void Start()
     {
@@ -132,8 +130,11 @@ public class PuzzleManager : MonoBehaviour
         Vector2 startCoordinates = startTile.Coordinates;
         Vector2 endCoordinates = endTile.Coordinates;
 
-        startTile.SetTilePositionAndCoordinates(endPosition, endCoordinates);
-        endTile.SetTilePositionAndCoordinates(startPosition, startCoordinates);
+        int startCurrentNumberPosition = startTile.CurrentNumberPosition;
+        int endCurrentNumberPosition = endTile.CurrentNumberPosition;
+
+        startTile.SetTilePositionAndCoordinates(endPosition, endCoordinates, endCurrentNumberPosition);
+        endTile.SetTilePositionAndCoordinates(startPosition, startCoordinates, startCurrentNumberPosition);
     }
     private void ShuffleTiles()
     {
@@ -144,6 +145,8 @@ public class PuzzleManager : MonoBehaviour
             Transform tileTransform = _grid.GetChild(i);
             if(tileTransform.TryGetComponent<Tile>(out Tile tile))
             {
+                tile.SetCurrentNumberPosition(i + 1);
+                tile.SetPuzzleManager(this);
                 _currentGridTiles.Add(tile);
             }
         }
@@ -157,5 +160,22 @@ public class PuzzleManager : MonoBehaviour
 
         _emptyTile.SetCurrentNumber(_remainingNumbers[0]);
         _remainingNumbers.RemoveAt(0);
+    }
+    public void CheckTilesPosition()
+    {
+        int tilesPositionedCorrectly = 0;
+
+        foreach(Tile tile in _currentGridTiles)
+        {
+            if(tile.Number == tile.CurrentNumberPosition)
+            {
+                tilesPositionedCorrectly++;
+            }
+        }
+
+        if(tilesPositionedCorrectly == _currentGridTiles.Count)
+        {
+            Debug.Log("won");
+        }
     }
 }
