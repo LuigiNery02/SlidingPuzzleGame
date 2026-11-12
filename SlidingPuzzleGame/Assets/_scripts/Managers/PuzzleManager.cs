@@ -1,26 +1,48 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PuzzleManager : MonoBehaviour
 {
     public bool GameStarted {  get; private set; }
+    public Transform CurrentGrid { get; private set; }
 
     [SerializeField]
-    private Transform _grid;
-    [SerializeField]
-    private Tile _emptyTile;
+    private Transform[] _grids;
     [Range(0, 200)]
     [SerializeField]
     private int iterations = 100;
+    [SerializeField]
+    private Button[] _selectGridButtons;
 
+    private Tile _emptyTile;
     private TileCheckResult _resultInfo;
     private List<Tile> _currentGridTiles = new List<Tile>();
     private List<int> _remainingNumbers = new List<int>();
-    private void Start()
+    private void OnEnable()
     {
-        InitializeTilesInOrder();
-        ShuffleTilesByValidMoves(iterations);
-        GameStarted = true;
+        if (_grids.Length != _selectGridButtons.Length)
+        {
+            Debug.Log("Grid Length and Selected Grid Buttons Length are not the same in the Inspector.", this);
+            enabled = false;
+            return;
+        }
+
+        for (int i = 0; i < _selectGridButtons.Length; i++)
+        {
+            int index = i;
+            _selectGridButtons[i].onClick.AddListener(() => SetGrid(_grids[index]));
+        }
+    }
+    private void OnDisable()
+    {
+        if(_grids.Length == _selectGridButtons.Length)
+        {
+            for (int i = 0; i < _selectGridButtons.Length; i++)
+            {
+                _selectGridButtons[i].onClick.RemoveAllListeners();
+            }
+        }
     }
     public void CheckTileMovement(Tile selectedTile, Tile targetTile)
     {
@@ -148,11 +170,11 @@ public class PuzzleManager : MonoBehaviour
         _remainingNumbers.Clear();
         _currentGridTiles.Clear();
 
-        for (int i = 0; i < _grid.childCount; i++)
+        for (int i = 0; i < CurrentGrid.childCount; i++)
         {
             _remainingNumbers.Add(i + 1);
 
-            Transform tileTransform = _grid.GetChild(i);
+            Transform tileTransform = CurrentGrid.GetChild(i);
             if (tileTransform.TryGetComponent<Tile>(out Tile tile))
             {
                 tile.SetCurrentNumberPosition(i + 1);
@@ -203,5 +225,19 @@ public class PuzzleManager : MonoBehaviour
         {
             Debug.Log("won");
         }
+    }
+    private void SetGrid(Transform currentGrid)
+    {
+        CurrentGrid = currentGrid;
+        CurrentGrid.GetChild(CurrentGrid.childCount - 1).TryGetComponent<Tile>(out Tile lastTile);
+        _emptyTile = lastTile;
+        InitializeTilesInOrder();
+        ShuffleTilesByValidMoves(iterations);
+        for(int i = 0; i < _selectGridButtons.Length; i++)
+        {
+            _selectGridButtons[i].gameObject.SetActive(false);
+        }
+        CurrentGrid.gameObject.SetActive(true);
+        GameStarted = true;
     }
 }
