@@ -5,34 +5,61 @@ using UnityEngine.UI;
 public class PuzzleManager : MonoBehaviour
 {
     public bool GameStarted {  get; private set; }
-    public Transform CurrentGrid { get; private set; }
+    public Grid CurrentGrid { get; private set; }
+    public Difficult CurrentDifficult {  get; private set; }
 
     [SerializeField]
-    private Transform[] _grids;
-    [Range(0, 200)]
-    [SerializeField]
-    private int iterations = 100;
+    private Grid[] _grids;
+    
     [SerializeField]
     private Button[] _selectGridButtons;
+    [SerializeField]
+    private Dropdown _difficultDropdown;
 
+    private int _iterations;
     private Tile _emptyTile;
     private TileCheckResult _resultInfo;
     private List<Tile> _currentGridTiles = new List<Tile>();
     private List<int> _remainingNumbers = new List<int>();
-    private void OnEnable()
+    private void Awake()
     {
-        if (_grids.Length != _selectGridButtons.Length)
+        if (_grids == null)
         {
-            Debug.Log("Grid Length and Selected Grid Buttons Length are not the same in the Inspector.", this);
+            Debug.LogError("Grids not assigned on the inspector", this);
             enabled = false;
             return;
         }
 
+        if (_selectGridButtons == null)
+        {
+            Debug.LogError("Select Grid Buttons not assigned on the inspector", this);
+            enabled = false;
+            return;
+        }
+
+        if (_grids.Length != _selectGridButtons.Length)
+        {
+            Debug.LogError("Grid Length and Selected Grid Buttons Length are not the same in the Inspector.", this);
+            enabled = false;
+            return;
+        }
+
+        if (_difficultDropdown == null)
+        {
+            Debug.LogError("Difficult Dropdown not assigned on the inspector", this);
+            enabled = false;
+            return;
+        }
+    }
+    private void OnEnable()
+    {
         for (int i = 0; i < _selectGridButtons.Length; i++)
         {
             int index = i;
             _selectGridButtons[i].onClick.AddListener(() => SetGrid(_grids[index]));
         }
+
+        _difficultDropdown.onValueChanged.AddListener((int difficult) => SetDifficult(difficult));
     }
     private void OnDisable()
     {
@@ -59,11 +86,19 @@ public class PuzzleManager : MonoBehaviour
 
             if (!_resultInfo.IsEmptyTileDirectlyAdjacent)
             {
-                Tile candidateTile = selectedTile.CheckAdjacentTiles(_resultInfo.Direction);
+                List<Tile> candidateTiles = selectedTile.CheckAdjacentTiles(_resultInfo.Direction);
+                int tilesCount = candidateTiles.Count;
 
-                if(candidateTile != null && AreTilesAdjacent(candidateTile, _emptyTile))
+                if (candidateTiles != null)
                 {
-                    SwapTilesPositions(candidateTile, _emptyTile);
+                    for (int i = 0; i < tilesCount - 1; i++)
+                    {
+                        if (AreTilesAdjacent(candidateTiles[candidateTiles.Count - 2], candidateTiles[candidateTiles.Count - 1]))
+                        {
+                            SwapTilesPositions(candidateTiles[candidateTiles.Count - 2], candidateTiles[candidateTiles.Count - 1]);
+                            candidateTiles.RemoveAt(candidateTiles.Count - 2);
+                        }
+                    }
                 }
             }
 
@@ -78,7 +113,7 @@ public class PuzzleManager : MonoBehaviour
             {
                 return;
             }
-
+            
             if (!AreTilesAdjacent(selectedTile, targetTile))
             {
                 return;
@@ -170,11 +205,11 @@ public class PuzzleManager : MonoBehaviour
         _remainingNumbers.Clear();
         _currentGridTiles.Clear();
 
-        for (int i = 0; i < CurrentGrid.childCount; i++)
+        for (int i = 0; i < CurrentGrid.transform.childCount; i++)
         {
             _remainingNumbers.Add(i + 1);
 
-            Transform tileTransform = CurrentGrid.GetChild(i);
+            Transform tileTransform = CurrentGrid.transform.GetChild(i);
             if (tileTransform.TryGetComponent<Tile>(out Tile tile))
             {
                 tile.SetCurrentNumberPosition(i + 1);
@@ -226,18 +261,37 @@ public class PuzzleManager : MonoBehaviour
             Debug.Log("won");
         }
     }
-    private void SetGrid(Transform currentGrid)
+    private void SetGrid(Grid currentGrid)
     {
         CurrentGrid = currentGrid;
-        CurrentGrid.GetChild(CurrentGrid.childCount - 1).TryGetComponent<Tile>(out Tile lastTile);
+        _iterations = CurrentGrid.Iterations;
+        CurrentGrid.transform.GetChild(CurrentGrid.transform.childCount - 1).TryGetComponent<Tile>(out Tile lastTile);
         _emptyTile = lastTile;
         InitializeTilesInOrder();
-        ShuffleTilesByValidMoves(iterations);
+        ShuffleTilesByValidMoves(_iterations);
         for(int i = 0; i < _selectGridButtons.Length; i++)
         {
             _selectGridButtons[i].gameObject.SetActive(false);
         }
         CurrentGrid.gameObject.SetActive(true);
         GameStarted = true;
+    }
+    private void SetDifficult(int difficult)
+    {
+        switch (difficult)
+        {
+            case 0:
+                CurrentDifficult = Difficult.Easy;
+                break;
+            case 1:
+                CurrentDifficult = Difficult.Medium;
+                break;
+            case 2:
+                CurrentDifficult = Difficult.Hard;
+                break;
+            default:
+                CurrentDifficult = Difficult.Easy;
+                break;
+        }
     }
 }

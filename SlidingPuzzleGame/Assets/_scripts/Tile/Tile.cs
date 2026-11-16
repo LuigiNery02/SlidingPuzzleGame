@@ -1,5 +1,6 @@
 ﻿using TMPro;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class Tile : MonoBehaviour
 {
@@ -35,11 +36,13 @@ public class Tile : MonoBehaviour
             enabled = false;
         }
     }
-    public Tile CheckAdjacentTiles(Vector2 direction)
+    public List<Tile> CheckAdjacentTiles(Vector2 direction)
     {
         RaycastHit2D[] hit = Physics2D.RaycastAll(transform.position, direction, _raycastDistance, 1 << gameObject.layer);
+        bool hasEmptyTile = false;
+        List<Tile> allAdjacentTiles = new List<Tile>();
 
-        for(int i = 0; i < hit.Length; i++)
+        for (int i = 0; i < hit.Length; i++)
         {
             if (hit[i].collider == _collider2D)
             {
@@ -48,8 +51,18 @@ public class Tile : MonoBehaviour
 
             if (hit[i].transform.TryGetComponent<Tile>(out Tile adjacentTile))
             {
-                return adjacentTile;
+                allAdjacentTiles.Add(adjacentTile);
+                if(adjacentTile.TileType == TileType.EmptyTile)
+                {
+                    hasEmptyTile = true;
+                    break;
+                }
             }
+        }
+
+        if (hasEmptyTile)
+        {
+            return allAdjacentTiles;
         }
 
         return null;
